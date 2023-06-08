@@ -34,9 +34,9 @@ namespace EFCoreWithPostgreSQL.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ItemName = table.Column<string>(type: "varchar", maxLength: 100, nullable: false),
-                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Price = table.Column<double>(type: "real", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Total = table.Column<double>(type: "double precision", nullable: false, computedColumnSql: "\"Price\" * \"Quantity\"", stored: true),
+                    Total = table.Column<double>(type: "real", nullable: false, computedColumnSql: "\"Price\" * \"Quantity\"", stored: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
