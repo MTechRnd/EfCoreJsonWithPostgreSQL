@@ -27,5 +27,30 @@ namespace EFCoreJsonApp.Data
             modelBuilder.ApplyConfiguration(new OrderDetailEntityConfiguration());
         }
 
+        public override int SaveChanges()
+        {
+            UpdateTimestamps();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            UpdateTimestamps();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void UpdateTimestamps()
+        {
+            var entities = ChangeTracker.Entries()
+                .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Modified || e.State == EntityState.Added));
+            foreach (var entity in entities)
+            {
+                if (entity.State == EntityState.Added)
+                {
+                    ((BaseEntity)entity.Entity).CreatedAt = DateTime.UtcNow;
+                }
+                ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
+            }
+        }
     }
 }

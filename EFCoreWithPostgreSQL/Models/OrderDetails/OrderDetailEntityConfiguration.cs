@@ -18,13 +18,13 @@ namespace EFCoreJsonApp.Models.OrderDetails
                 .HasMaxLength(100);
 
             modelBuilder.Property(o => o.Price)
-                .HasColumnType("double precision");
+                .HasColumnType("real");
 
             modelBuilder.Property(o => o.Quantity)
                 .HasColumnType("int");
 
             modelBuilder.Property(o => o.Total)
-               .HasColumnType("double precision")
+               .HasColumnType("real")
                 .HasComputedColumnSql("\"Price\" * \"Quantity\"", stored: true);  
 
             modelBuilder.HasOne(o => o.Order)
