@@ -2,6 +2,7 @@
 using EFCoreJsonApp.Data;
 using EFCoreJsonApp.Models.CsvDataReadModels;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Globalization;
 
@@ -20,11 +21,10 @@ namespace EFCoreWithPostgreSQL.Migrations.JsonData
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var records = csv.GetRecords<CsvOrderDetailsWithJsonEntity>().ToList();
-            using var dbContext = new JsonDataContext();
-
-            var connectionString = "User ID=postgres;Password=1234;Server=localhost;Database=OrdersDB;Port=5433; IntegratedSecurity=true;Pooling=true;";
-
-            using var connection = new NpgsqlConnection(connectionString);
+            IConfiguration config = new ConfigurationBuilder()
+                .AddUserSecrets<DataContext>()
+                .Build();
+            using var connection = new NpgsqlConnection(config.GetConnectionString("LocalhostConnection"));
             connection.Open();
 
             using var transaction = connection.BeginTransaction();
