@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EFCoreWithPostgreSQL": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  pg-sql-server:
+    image: postgres:latest
+    container_name: pg_sql_db
+    environment:
+      - POSTGRES_USER=${USER_ID}
+      - POSTGRES_PASSWORD=${USER_PASSWORD}
+      - POSTGRES_DB=OrdersDB
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./data:/var/opt/postgresql/data
+      - ./init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+  efcorewithpostgresql:
+    image: ${DOCKER_REGISTRY-}efcorewithpostgresql
+    build:
+      context: .
+      dockerfile: EFCoreWithPostgreSQL/Dockerfile
+    environment:
+      DBServer: "pg-sql-server"
+    depends_on:
+        - pg-sql-server
