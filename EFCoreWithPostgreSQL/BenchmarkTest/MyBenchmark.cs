@@ -199,7 +199,6 @@ namespace EFCoreJsonApp.BenchmarkTest
             //var resJson13 = _jsonUsingLinqService.GetMaxPriceByOrderIdAsync(_guidJson);
             //var resJson14 = _jsonUsingLinqService.GetMinPriceByOrderIdAsync(_guidJson);
 
-
             //var orderWithOrderDetails = new OrderWithOrderDetailEntity()
             //{
             //    CustomerName = "Smitesh",
