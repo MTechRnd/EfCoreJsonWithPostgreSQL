@@ -34,7 +34,7 @@ namespace EFCoreWithPostgreSQL.Migrations.JsonData
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
 
-            var values = string.Join(", ", records.Select(r => $"('{r.CustomerName}', '{r.OrderDate}', '{r.OrderDetailsJson}')"));
+            var values = string.Join(", ", records.Select(r => $"('{r.CustomerName}', '{r.OrderDate:yyyy--MM--dd}', '{r.OrderDetailsJson}')"));
             var sql = $"INSERT INTO {tableName} (\"CustomerName\", \"OrderDate\", \"OrderDetailsJson\") VALUES {values}";
 
             command.CommandText = sql;

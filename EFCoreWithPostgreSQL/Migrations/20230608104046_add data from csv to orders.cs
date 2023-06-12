@@ -35,7 +35,7 @@ namespace EFCoreWithPostgreSQL.Migrations
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
 
-            var values = string.Join(", ", records.Select(r => $"('{r.Id}','{r.CustomerName}', '{r.OrderDate}')"));
+            var values = string.Join(", ", records.Select(r => $"('{r.Id}','{r.CustomerName}', '{r.OrderDate:yyyy-MM-dd}')"));
             var sql = $"INSERT INTO {tableName} (\"Id\",\"CustomerName\", \"OrderDate\") VALUES {values}";
 
             command.CommandText = sql;
