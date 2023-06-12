@@ -27,15 +27,16 @@ namespace EFCoreJsonApp.Services.JsonUsingLinqService
             if (result == null)
                 return false;
             result.CustomerName = orderWithOrdderDetailsDto.CustomerName;
-            //foreach(var orderDetail in orderWithOrdderDetailsDto.OrderDetails)
-            //{
-            //    if(orderDetail.ListIndex >= 0 && orderDetail.ListIndex < result.OrderDetailsJson.Count())
-            //    {
-            //        result.OrderDetailsJson[orderDetail.ListIndex].Price = orderDetail.Price;
-            //        result.OrderDetailsJson[orderDetail.ListIndex].Quantity = orderDetail.Quantity;
-            //        result.OrderDetailsJson[orderDetail.ListIndex].Total = orderDetail.Price * orderDetail.Quantity;
-            //    }
-            //}
+            foreach (var orderDetail in orderWithOrdderDetailsDto.OrderDetails)
+            {
+                if (orderDetail.ListIndex >= 0 && orderDetail.ListIndex < result.OrderDetailsJson.Count())
+                {
+                    result.OrderDetailsJson[orderDetail.ListIndex].Price = orderDetail.Price;
+                    result.OrderDetailsJson[orderDetail.ListIndex].Quantity = orderDetail.Quantity;
+                    result.OrderDetailsJson[orderDetail.ListIndex].Total = orderDetail.Price * orderDetail.Quantity;
+                }
+            }
+            _context.Entry(result).Property(e => e.OrderDetailsJson).IsModified = true;
             await _context.SaveChangesAsync();
             return true;
         }
