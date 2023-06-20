@@ -2,7 +2,7 @@
 
 # Report
 Here, you can see all query comparisons between the traditional approach and json linq approach. Here I have created two benchmark methods one is 
-TraditionalBenchmark and the other one is JsonLinqBenchmark. I have tested all queries one by one and made this report. You can see the test results as 
+TraditionalBenchmark and the other one is JsonBenchmark. I have tested all queries one by one and made this report. You can see the test results as 
 follow. I have also added a performance-improving percentage so you can easily see which performed better for that case.
 
 # All Queries
@@ -22,9 +22,10 @@ FROM "OrderWithOrderDetails" AS o
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |   StdDev | Ratio |      Gen0 |     Gen1 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|---------:|------:|----------:|---------:|----------:|------------:|
-|    JsonLinqBenchmark | 47.19 ms | 1.699 ms | 0.263 ms |  0.53 |  272.7273 |        - |   3.25 MB |        0.13 |
+|      JsonBenchmark   | 47.19 ms | 1.699 ms | 0.263 ms |  0.53 |  272.7273 |        - |   3.25 MB |        0.13 |
 | TraditionalBenchmark | 88.73 ms | 6.889 ms | 1.789 ms |  1.00 | 2833.3333 | 333.3333 |  25.61 MB |        1.00 |
- Performance Improving of JsonLinq query is 61.12%	
+
+ Performance Improving of Json query is 61.12%	
 
 ## Get single data of customer
 
@@ -47,9 +48,10 @@ LIMIT 1
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
-|    JsonLinqBenchmark | 194.8 us | 40.03 us | 10.40 us |  0.58 |    0.03 | 0.7324 |   8.29 KB |        0.63 |
+|      JsonBenchmark   | 194.8 us | 40.03 us | 10.40 us |  0.58 |    0.03 | 0.7324 |   8.29 KB |        0.63 |
 | TraditionalBenchmark | 335.3 us |  8.35 us |  1.29 us |  1.00 |    0.00 | 0.9766 |  13.18 KB |        1.00 |
-Performance Improving of JsonLinq query is 53.00%
+
+Performance Improving of Json query is 53.00%
 
 ## Get data for multiple customer
 
@@ -68,29 +70,31 @@ WHERE o."Id" IN ('002b1a62-72a1-483c-8b3b-40f7c8283bdf', '977827d2-19fa-ed11-9f0
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
-|    JsonLinqBenchmark | 270.7 us | 38.55 us | 10.01 us |  0.59 |    0.02 | 1.4648 |  17.12 KB |        0.52 |
+|      JsonBenchmark   | 270.7 us | 38.55 us | 10.01 us |  0.59 |    0.02 | 1.4648 |  17.12 KB |        0.52 |
 | TraditionalBenchmark | 467.4 us | 22.49 us |  3.48 us |  1.00 |    0.00 | 2.9297 |  33.17 KB |        1.00 |
-Performance Improving of JsonLinq query is 53.30%
+
+Performance Improving of Json query is 53.30%
 
 ## Total orders for given customer
 
 ### Traditional Query
- SELECT count(*)::int
+SELECT count(*)::int
 FROM "Orders" AS o
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 WHERE o."Id" = @__id_0
                           
 ### Json Linq Query
-SELECT [o].[Id], [o].[CreatedAt], [o].[CustomerName], [o].[OrderDate], [o].[Timestamp], [o].[UpdatedAt], JSON_QUERY([o].[OrderDetailsJson],'$')
-FROM [OrderWithOrderDetails] AS [o]
-WHERE [o].[Id] = @__id_0
+SELECT jsonb_array_length("OrderDetailsJson") AS TotalOrderByCustomerId
+FROM "OrderWithOrderDetails"
+WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
-|               Method |     Mean |    Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|--------------------- |---------:|---------:|--------:|------:|--------:|-------:|----------:|------------:|
-|    JsonLinqBenchmark | 132.0 us | 32.49 us | 8.44 us |  0.51 |    0.03 | 0.6104 |   5.62 KB |        0.46 |
-| TraditionalBenchmark | 257.2 us | 23.78 us | 6.18 us |  1.00 |    0.00 | 0.9766 |  12.16 KB |        1.00 |
-Performance Improving of JsonLinq query is 64.33%
+|               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
+|      JsonBenchmark   | 522.8 us | 39.32 us | 10.21 us |  0.98 |    0.02 | 1.9531 |  18.13 KB |        1.12 |
+| TraditionalBenchmark | 531.4 us | 67.20 us | 17.45 us |  1.00 |    0.00 | 0.9766 |  16.19 KB |        1.00 |
+
+Performance Improving of Json query is 1.63%
 
 ## Total orders for all customer
 
@@ -101,15 +105,16 @@ INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 GROUP BY o."Id"
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
+SELECT ""Id"", jsonb_array_length(""OrderDetailsJson"") AS TotalOrder
+FROM ""OrderWithOrderDetails""
 
 ### Benchmark Test Result:
-|               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |     Gen0 |     Gen1 |    Gen2 | Allocated | Alloc Ratio |
-|--------------------- |---------:|---------:|---------:|------:|--------:|---------:|---------:|--------:|----------:|------------:|
-| TraditionalBenchmark | 17.72 ms | 0.954 ms | 0.148 ms |  1.00 |    0.00 | 281.2500 | 156.2500 | 31.2500 |   2.48 MB |        1.00 |
-|    JsonLinqBenchmark | 46.50 ms | 4.453 ms | 0.689 ms |  2.62 |    0.04 | 272.7273 |  90.9091 |       - |   3.08 MB |        1.24 |
-Performance Improving of Traditional query is 89.62%
+|               Method |      Mean |     Error |    StdDev | Ratio |     Gen0 |     Gen1 |    Gen2 | Allocated | Alloc Ratio |
+|--------------------- |----------:|----------:|----------:|------:|---------:|---------:|--------:|----------:|------------:|
+|      JsonBenchmark   |  4.041 ms | 0.7985 ms | 0.2074 ms |  0.23 | 281.2500 | 132.8125 | 39.0625 |   2.49 MB |        1.00 |
+| TraditionalBenchmark | 17.951 ms | 0.3463 ms | 0.0899 ms |  1.00 | 281.2500 | 156.2500 | 31.2500 |   2.48 MB |        1.00 |
+
+Performance Improving of Json query is 126.50%
 
 ## Average of all price 
 
@@ -119,15 +124,17 @@ FROM "Orders" AS o
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
+SELECT AVG(CAST(json_data ->> 'Price' AS real)) AS AverageOfPrice
+FROM ""OrderWithOrderDetails"",
+jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
 
 ### Benchmark Test Result:
-|               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |     Gen0 |  Allocated | Alloc Ratio |
-|--------------------- |---------:|---------:|---------:|------:|--------:|---------:|-----------:|------------:|
-| TraditionalBenchmark | 11.68 ms | 0.140 ms | 0.022 ms |  1.00 |    0.00 |        - |   10.24 KB |        1.00 |
-|    JsonLinqBenchmark | 47.65 ms | 3.726 ms | 0.968 ms |  4.10 |    0.07 | 272.7273 | 3127.83 KB |      305.56 |
-Performance Improving of Traditional query is 121.25%
+|               Method |     Mean |     Error |   StdDev | Ratio | RatioSD | Allocated | Alloc Ratio |
+|--------------------- |---------:|----------:|---------:|------:|--------:|----------:|------------:|
+| TraditionalBenchmark | 12.47 ms |  0.904 ms | 0.140 ms |  1.00 |    0.00 |  13.21 KB |        1.00 |
+|      JsonBenchmark   | 43.88 ms | 20.898 ms | 5.427 ms |  3.57 |    0.52 |  17.78 KB |        1.35 |
+
+Performance Improving of Traditional query is 111.82%
 
 ## Maximum quantity by order id
 
@@ -138,16 +145,18 @@ INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 WHERE o."Id" = @__id_0
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
-WHERE o."Id" = @__id_0
+SELECT MAX(CAST(json_data ->> 'Quantity' AS Integer)) AS MaximumQuantity
+FROM "OrderWithOrderDetails",
+jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data
+WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|--------:|------:|--------:|-------:|----------:|------------:|
-|    JsonLinqBenchmark | 122.3 us | 24.50 us | 3.79 us |  0.45 |    0.02 | 0.4883 |   5.73 KB |        0.44 |
-| TraditionalBenchmark | 269.0 us | 15.90 us | 4.13 us |  1.00 |    0.00 | 0.9766 |  12.92 KB |        1.00 |
-Performance Improving of JsonLinq query is 74.98%
+| TraditionalBenchmark | 512.1 us | 36.15 us | 9.39 us |  1.00 |    0.00 | 0.9766 |  16.63 KB |        1.00 |
+|        JsonBenchmark | 669.1 us | 28.29 us | 7.35 us |  1.31 |    0.02 | 1.9531 |  20.83 KB |        1.25 |
+
+Performance Improving of Traditional query is 26.58%
 
 ## Total by order id
 
@@ -158,26 +167,28 @@ INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 WHERE o."Id" = @__id_0
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
-WHERE o."Id" = @__id_0
+SELECT SUM(CAST(json_data ->> 'Total' AS real)) AS TotalByOrderId
+FROM "OrderWithOrderDetails",
+jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data
+WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
-|               Method |     Mean |    Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
-|--------------------- |---------:|---------:|--------:|------:|--------:|-------:|----------:|------------:|
-|    JsonLinqBenchmark | 132.5 us | 36.60 us | 9.51 us |  0.50 |    0.04 | 0.4883 |   5.73 KB |        0.44 |
-| TraditionalBenchmark | 264.0 us | 18.24 us | 2.82 us |  1.00 |    0.00 | 0.9766 |  13.02 KB |        1.00 |
-Performance Improving of JsonLinq query is 66.33%
+|               Method |     Mean |    Error |  StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
+|--------------------- |---------:|---------:|--------:|------:|-------:|----------:|------------:|
+| TraditionalBenchmark | 508.1 us | 15.25 us | 3.96 us |  1.00 | 0.9766 |  16.77 KB |        1.00 |
+|        JsonBenchmark | 730.2 us | 18.08 us | 2.80 us |  1.44 | 1.9531 |  21.19 KB |        1.26 |
+
+Performance Improving of Traditional query is 35.87%
 
 ## Insert Data
 
 ### Traditional Query
 INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt")
- VALUES (@p4, @p5, @p6, @p7, @p8, @p9)
- RETURNING "Id", xmin, "Total";
- INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt")
- VALUES (@p10, @p11, @p12, @p13, @p14, @p15)
- RETURNING "Id", xmin, "Total";
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9)
+RETURNING "Id", xmin, "Total";
+INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt")
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15)
+RETURNING "Id", xmin, "Total";
 
 ### Json Linq Query
 INSERT INTO "OrderWithOrderDetails" ("CreatedAt", "CustomerName", "OrderDate", "OrderDetailsJson", "UpdatedAt")
@@ -187,9 +198,10 @@ RETURNING "Id", xmin;
 ### Benchmark Test Result:
 |               Method |     Mean |     Error |   StdDev | Ratio | RatioSD |      Gen0 |     Gen1 | Allocated | Alloc Ratio |
 |--------------------- |---------:|----------:|---------:|------:|--------:|----------:|---------:|----------:|------------:|
-|    JsonLinqBenchmark | 10.98 ms |  6.093 ms | 1.582 ms |  0.60 |    0.02 | 1240.2344 | 181.6406 |  11.14 MB |        0.72 |
+|    JsonBenchmark     | 10.98 ms |  6.093 ms | 1.582 ms |  0.60 |    0.02 | 1240.2344 | 181.6406 |  11.14 MB |        0.72 |
 | TraditionalBenchmark | 18.34 ms | 10.329 ms | 2.682 ms |  1.00 |    0.00 | 1726.5625 | 140.6250 |   15.5 MB |        1.00 |
-Performance Improving of JsonLinq query is 50.20%
+
+Performance Improving of Json query is 50.20%
  
 ## Updating Data
 
@@ -210,10 +222,10 @@ UPDATE "OrderWithOrderDetails" SET "CustomerName" = @p0, "OrderDetailsJson" = @p
 WHERE "Id" = @p3 AND xmin = @p4
 RETURNING xmin;
 
-
 ### Benchmark Test Result:
 |               Method |        Mean |       Error |    StdDev | Ratio | RatioSD |      Gen0 |     Gen1 |   Allocated | Alloc Ratio |
 |--------------------- |------------:|------------:|----------:|------:|--------:|----------:|---------:|------------:|------------:|
 | TraditionalBenchmark |    979.0 us |    72.64 us |  11.24 us |  1.00 |    0.00 |    5.8594 |        - |    67.89 KB |        1.00 |
-|    JsonLinqBenchmark | 71,306.4 us | 1,595.72 us | 414.40 us | 72.70 |    0.77 | 2250.0000 | 500.0000 | 20869.86 KB |      307.43 |
+|    JsonBenchmark     | 71,306.4 us | 1,595.72 us | 414.40 us | 72.70 |    0.77 | 2250.0000 | 500.0000 | 20869.86 KB |      307.43 |
+
 Performance Improving of Traditional query is 194.06%
