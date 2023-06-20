@@ -2,6 +2,7 @@
 using EFCoreJsonApp.Models.OrderDetails;
 using EFCoreJsonApp.Models.OrderWithOrderDetail;
 using EFCoreJsonApp.Models.OrderWithOrderDetailJson;
+using EFCoreJsonApp.Models.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCoreJsonApp.Services.JsonUsingLinqService
@@ -53,42 +54,61 @@ namespace EFCoreJsonApp.Services.JsonUsingLinqService
             return false;
         }
 
-        public async Task<float> AverageOfPriceAsync()
+        public async Task<AverageOfPriceResult> AverageOfPriceAsync()
         {
-            var result = _context.OrderWithOrderDetails
-                .AsEnumerable()
-                .Select(s => new { price = s.OrderDetailsJson.Average(s => s.Price) })
-                .Average(r => r.price);
-            return result;
+            var query = @"
+                    SELECT
+                    AVG(CAST(json_data ->> 'Price' AS real)) AS AverageOfPrice
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data";
+            var result = await _context.Set<AverageOfPriceResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<double> AverageOfQuantityAsync()
+        public async Task<AverageOfQuantityResult> AverageOfQuantityAsync()
         {
-            var result = _context.OrderWithOrderDetails
-                .AsEnumerable()
-                .Select(s => new { quantity = s.OrderDetailsJson.Average(s => s.Quantity) })
-                .Average(r => r.quantity);
-            return result;
+            var query = @"                    
+                    SELECT
+                    AVG(CAST(json_data ->> 'Quantity' AS real)) AS AverageOfQuantity
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data";
+            var result = await _context.Set<AverageOfQuantityResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<double> SumOfAllPriceAsync()
+        public async Task<TotalPriceResult> SumOfAllPriceAsync()
         {
-            var result = _context.OrderWithOrderDetails
-                .AsEnumerable()
-                .Select(s => new { price = s.OrderDetailsJson.Sum(s => s.Price) })
-                .Sum(r => r.price);
-            return result;
+            var query = @"
+                    SELECT
+                    SUM(CAST(json_data ->> 'Price' AS real)) AS TotalPrice
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data";
+            var result = await _context.Set<TotalPriceResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<int> SumOfAllQuantityAsync()
+        public async Task<TotalQuantityResult> SumOfAllQuantityAsync()
         {
-            var result = _context.OrderWithOrderDetails
-                .AsEnumerable()
-                .Select(s => new { quantity = s.OrderDetailsJson.Sum(s => s.Quantity) })
-                .Sum(r => r.quantity);
-            return result;
+            var query = @"
+                    SELECT
+                    SUM(CAST(json_data ->> 'Quantity' AS Integer)) AS TotalQuantity
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data";
+            var result = await _context.Set<TotalQuantityResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
-
 
         public async Task<IList<OrderWithOrderDetailEntity>> GetAllDataAsync()
         {
@@ -111,73 +131,111 @@ namespace EFCoreJsonApp.Services.JsonUsingLinqService
             return result;
         }
 
-        public async Task<int> TotalOrdersOfCustomerAsync(Guid id)
+        public async Task<TotalOrderByCustomerResult> TotalOrdersOfCustomerAsync(Guid id)
         {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(od => od.OrderDetailsJson.Count())
-                .FirstOrDefault();
-            return result;
+            var query = @$"
+                    SELECT jsonb_array_length(""OrderDetailsJson"") AS TotalOrderByCustomerId
+                    FROM ""OrderWithOrderDetails""
+                    where ""OrderWithOrderDetails"".""Id"" = '{id}'
+            ";
+            var result = await _context.Set<TotalOrderByCustomerResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+
+            return result[0];
         }
 
         public async Task<IList<OrderCount>> TotalOrdersOfCustomersAsync()
         {
-            var result1 = _context.OrderWithOrderDetails
-                            .AsEnumerable()
-                            .Select(s => new OrderCount { Id = s.Id, TotalOrder = s.OrderDetailsJson.Count() })
-                            .ToList();
-            return result1;
-        }
-
-        public async Task<int> GetMaxQuantityByOrderIdAsync(Guid id)
-        {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(o => o.OrderDetailsJson.Max(o => o.Quantity))
-                .FirstOrDefault();
+            var query = @"
+                SELECT ""Id"", jsonb_array_length(""OrderDetailsJson"") AS TotalOrder
+                FROM ""OrderWithOrderDetails""
+            ";
+            var result = await _context.Set<OrderCount>()
+                .FromSqlRaw(query)
+                .ToListAsync();
             return result;
         }
 
-        public async Task<int> GetMinQuantityByOrderIdAsync(Guid id)
+        public async Task<MaxQuantityResult> GetMaxQuantityByOrderIdAsync(Guid id)
         {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(o => o.OrderDetailsJson.Min(o => o.Quantity))
-                .FirstOrDefault();
-            return result;
+            var query = @$"
+                SELECT
+                MAX(CAST(json_data ->> 'Quantity' AS Integer)) AS MaximumQuantity
+                FROM
+                ""OrderWithOrderDetails"",
+                jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
+                WHERE ""OrderWithOrderDetails"".""Id"" = '{id}'
+                ";
+            var result = await _context.Set<MaxQuantityResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<float> GetTotalByOrderIdAsync(Guid id)
+        public async Task<MinQuantityResult> GetMinQuantityByOrderIdAsync(Guid id)
         {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(o => o.OrderDetailsJson.Sum(o => o.Total))
-                .FirstOrDefault();
-            return result;
+            var query = @$"
+                SELECT
+                MIN(CAST(json_data ->> 'Quantity' AS Integer)) AS MinimumQuantity
+                FROM
+                ""OrderWithOrderDetails"",
+                jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
+                WHERE ""OrderWithOrderDetails"".""Id"" = '{id}'
+                ";
+            var result = await _context.Set<MinQuantityResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<float> GetMaxPriceByOrderIdAsync(Guid id)
+        public async Task<TotalByOrderResult> GetTotalByOrderIdAsync(Guid id)
         {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(o => o.OrderDetailsJson.Max(o => o.Price))
-                .FirstOrDefault();
-            return result;
+            var query = @$"
+                    SELECT
+                    SUM(CAST(json_data ->> 'Total' AS real)) AS TotalByOrderId
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
+                    WHERE ""OrderWithOrderDetails"".""Id"" = '{id}'
+                ";
+            var result = await _context.Set<TotalByOrderResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
 
-        public async Task<float> GetMinPriceByOrderIdAsync(Guid id)
+        public async Task<MaxPriceResult> GetMaxPriceByOrderIdAsync(Guid id)
         {
-            var result = _context.OrderWithOrderDetails
-                .Where(od => od.Id == id)
-                .AsEnumerable()
-                .Select(o => o.OrderDetailsJson.Min(o => o.Price))
-                .FirstOrDefault();
-            return result;
+            var query = @$"
+                    SELECT
+                    MAX(CAST(json_data ->> 'Price' AS real)) AS MaximumPrice
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
+                    WHERE ""OrderWithOrderDetails"".""Id"" = '{id}'
+                ";
+            var result = await _context
+                .Set<MaxPriceResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
+        }
+
+        public async Task<MinPriceResult> GetMinPriceByOrderIdAsync(Guid id)
+        {
+            var query = @$"
+                    SELECT
+                    MIN(CAST(json_data ->> 'Price' AS real)) AS MinimumPrice
+                    FROM
+                    ""OrderWithOrderDetails"",
+                    jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
+                    WHERE ""OrderWithOrderDetails"".""Id"" = '{id}'
+                ";
+            var result = await _context.Set<MinPriceResult>()
+                .FromSqlRaw(query)
+                .ToListAsync();
+            return result[0];
         }
     }
 }
