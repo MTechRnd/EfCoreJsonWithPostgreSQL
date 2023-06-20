@@ -10,13 +10,13 @@ follow. I have also added a performance-improving percentage so you can easily s
 ## Get all data
 
 ### Traditional Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt"
-FROM "Orders" AS o
-LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt" </br>
+FROM "Orders" AS o </br>
+LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 ORDER BY o."Id"
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
 FROM "OrderWithOrderDetails" AS o
 
 ### Benchmark Test Result:
@@ -30,20 +30,20 @@ FROM "OrderWithOrderDetails" AS o
 ## Get single data of customer
 
 ### Traditional Query
-SELECT t."Id", t."CreatedAt", t."CustomerName", t."OrderDate", t.xmin, t."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt"
-FROM (
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt"
-FROM "Orders" AS o
-WHERE o."Id" = @__id_0
-LIMIT 1
-) AS t
-LEFT JOIN "OrderDetails" AS o0 ON t."Id" = o0."OrderId"
+SELECT t."Id", t."CreatedAt", t."CustomerName", t."OrderDate", t.xmin, t."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt" </br>
+FROM ( </br>
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt" </br>
+FROM "Orders" AS o </br>
+WHERE o."Id" = @__id_0 </br>
+LIMIT 1 </br>
+) AS t </br>
+LEFT JOIN "OrderDetails" AS o0 ON t."Id" = o0."OrderId" </br>
 ORDER BY t."Id"
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
-WHERE o."Id" = @__id_0
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
+FROM "OrderWithOrderDetails" AS o </br>
+WHERE o."Id" = @__id_0 </br>
 LIMIT 1
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
@@ -56,15 +56,15 @@ Performance Improving of Json query is 53.00%
 ## Get data for multiple customer
 
 ### Traditional Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt"
-FROM "Orders" AS o
-LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
-WHERE o."Id" IN ('003caf85-8c76-4fb6-9140-18bc3ed523aa', 'b6fd1215-41f5-ed11-9f05-f46b8c8f0ef6', '01fa1215-41f5-ed11-9f05-f46b8c8f0ef6')
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o.xmin, o."UpdatedAt", o0."Id", o0."CreatedAt", o0."ItemName", o0."OrderId", o0."Price", o0."Quantity", o0.xmin, o0."Total", o0."UpdatedAt" </br>
+FROM "Orders" AS o </br>
+LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
+WHERE o."Id" IN ('003caf85-8c76-4fb6-9140-18bc3ed523aa', 'b6fd1215-41f5-ed11-9f05-f46b8c8f0ef6', '01fa1215-41f5-ed11-9f05-f46b8c8f0ef6') </br>
 ORDER BY o."Id"
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
+FROM "OrderWithOrderDetails" AS o </br>
 WHERE o."Id" IN ('002b1a62-72a1-483c-8b3b-40f7c8283bdf', '977827d2-19fa-ed11-9f08-f46b8c8f0ef6', '708b27d2-19fa-ed11-9f08-f46b8c8f0ef6')
 
 ### Benchmark Test Result:
@@ -78,14 +78,14 @@ Performance Improving of Json query is 53.30%
 ## Total orders for given customer
 
 ### Traditional Query
-SELECT count(*)::int
-FROM "Orders" AS o
-INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
+SELECT count(*)::int </br>
+FROM "Orders" AS o </br>
+INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
                           
 ### Json Linq Query
-SELECT jsonb_array_length("OrderDetailsJson") AS TotalOrderByCustomerId
-FROM "OrderWithOrderDetails"
+SELECT jsonb_array_length("OrderDetailsJson") AS TotalOrderByCustomerId </br>
+FROM "OrderWithOrderDetails" </br>
 WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
@@ -99,9 +99,9 @@ Performance Improving of Json query is 1.63%
 ## Total orders for all customer
 
 ### Traditional Query
-SELECT o."Id", count(*)::int AS "TotalOrder"
-FROM "Orders" AS o
-INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
+SELECT o."Id", count(*)::int AS "TotalOrder" </br>
+FROM "Orders" AS o </br>
+INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 GROUP BY o."Id"
 
 ### Json Linq Query
@@ -119,13 +119,13 @@ Performance Improving of Json query is 126.50%
 ## Average of all price 
 
 ### Traditional Query
- SELECT avg(o0."Price")::real
-FROM "Orders" AS o
+SELECT avg(o0."Price")::real </br>
+FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 
 ### Json Linq Query
-SELECT AVG(CAST(json_data ->> 'Price' AS real)) AS AverageOfPrice
-FROM ""OrderWithOrderDetails"",
+SELECT AVG(CAST(json_data ->> 'Price' AS real)) AS AverageOfPrice </br>
+FROM ""OrderWithOrderDetails"", </br>
 jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
 
 ### Benchmark Test Result:
@@ -139,15 +139,15 @@ Performance Improving of Traditional query is 111.82%
 ## Maximum quantity by order id
 
 ### Traditional Query
-SELECT min(o0."Quantity")
-FROM "Orders" AS o
-INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
+SELECT min(o0."Quantity") </br>
+FROM "Orders" AS o </br>
+INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
 
 ### Json Linq Query
-SELECT MAX(CAST(json_data ->> 'Quantity' AS Integer)) AS MaximumQuantity
-FROM "OrderWithOrderDetails",
-jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data
+SELECT MAX(CAST(json_data ->> 'Quantity' AS Integer)) AS MaximumQuantity </br>
+FROM "OrderWithOrderDetails", </br>
+jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data </br>
 WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
@@ -161,15 +161,15 @@ Performance Improving of Traditional query is 26.58%
 ## Total by order id
 
 ### Traditional Query
-SELECT COALESCE(sum(o0."Total"), 0)
-FROM "Orders" AS o
-INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
+SELECT COALESCE(sum(o0."Total"), 0) </br>
+FROM "Orders" AS o </br>
+INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
 
 ### Json Linq Query
-SELECT SUM(CAST(json_data ->> 'Total' AS real)) AS TotalByOrderId
-FROM "OrderWithOrderDetails",
-jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data
+SELECT SUM(CAST(json_data ->> 'Total' AS real)) AS TotalByOrderId </br>
+FROM "OrderWithOrderDetails", </br>
+jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data </br>
 WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
@@ -183,16 +183,16 @@ Performance Improving of Traditional query is 35.87%
 ## Insert Data
 
 ### Traditional Query
-INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt")
-VALUES (@p4, @p5, @p6, @p7, @p8, @p9)
-RETURNING "Id", xmin, "Total";
-INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt")
-VALUES (@p10, @p11, @p12, @p13, @p14, @p15)
+INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt") </br>
+VALUES (@p4, @p5, @p6, @p7, @p8, @p9) </br>
+RETURNING "Id", xmin, "Total"; </br>
+INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quantity", "UpdatedAt") </br>
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15) </br>
 RETURNING "Id", xmin, "Total";
 
 ### Json Linq Query
-INSERT INTO "OrderWithOrderDetails" ("CreatedAt", "CustomerName", "OrderDate", "OrderDetailsJson", "UpdatedAt")
-VALUES (@p0, @p1, @p2, @p3, @p4)
+INSERT INTO "OrderWithOrderDetails" ("CreatedAt", "CustomerName", "OrderDate", "OrderDetailsJson", "UpdatedAt") </br>
+VALUES (@p0, @p1, @p2, @p3, @p4) </br>
 RETURNING "Id", xmin;
 
 ### Benchmark Test Result:
@@ -206,20 +206,20 @@ Performance Improving of Json query is 50.20%
 ## Updating Data
 
 ### Traditional Query
-UPDATE "OrderDetails" SET "Price" = @p0, "Quantity" = @p1, "UpdatedAt" = @p2
-WHERE "Id" = @p3 AND xmin = @p4
-RETURNING xmin, "Total";
-UPDATE "Orders" SET "CustomerName" = @p5, "UpdatedAt" = @p6
-WHERE "Id" = @p7 AND xmin = @p8
+UPDATE "OrderDetails" SET "Price" = @p0, "Quantity" = @p1, "UpdatedAt" = @p2 </br>
+WHERE "Id" = @p3 AND xmin = @p4 </br>
+RETURNING xmin, "Total"; </br>
+UPDATE "Orders" SET "CustomerName" = @p5, "UpdatedAt" = @p6 </br>
+WHERE "Id" = @p7 AND xmin = @p8 </br>
 RETURNING xmin;
 
 ### Json Linq Query
-SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt"
-FROM "OrderWithOrderDetails" AS o
-WHERE o."Id" = @__orderWithOrdderDetailsDto_Id_0
-LIMIT 1
-UPDATE "OrderWithOrderDetails" SET "CustomerName" = @p0, "OrderDetailsJson" = @p1, "UpdatedAt" = @p2
-WHERE "Id" = @p3 AND xmin = @p4
+SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
+FROM "OrderWithOrderDetails" AS o </br>
+WHERE o."Id" = @__orderWithOrdderDetailsDto_Id_0 </br>
+LIMIT 1 </br>
+UPDATE "OrderWithOrderDetails" SET "CustomerName" = @p0, "OrderDetailsJson" = @p1, "UpdatedAt" = @p2 </br>
+WHERE "Id" = @p3 AND xmin = @p4 </br>
 RETURNING xmin;
 
 ### Benchmark Test Result:
