@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace EFCoreJsonApp.Models.Records
 {
-    public record AverageOfPriceResult(decimal AverageOfPrice);
-    public record AverageOfQuantityResult(float AverageOfQuantity);
+    public record AverageOfPriceResult(double AverageOfPrice);
+    public record AverageOfQuantityResult(double AverageOfQuantity);
     public record MaxPriceResult(float MaximumPrice);
     public record MaxQuantityResult(int MaximumQuantity);
     public record MinPriceResult(float MinimumPrice);
