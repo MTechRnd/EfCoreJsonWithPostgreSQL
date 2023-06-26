@@ -2,6 +2,7 @@
 using EFCoreJsonApp.Data;
 using EFCoreJsonApp.Models.CsvDataReadModels;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Formats.Asn1;
 using System.Globalization;
@@ -21,9 +22,10 @@ namespace EFCoreWithPostgreSQL.Migrations
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var records = csv.GetRecords<CsvOrderEntity>().ToList();
-            using var dbContext = new DataContext();
-            var connectionString = $"User ID=postgres;Password=1234;Server=localhost;Database=OrdersDB;Port=5433; IntegratedSecurity=true;Pooling=true;";
-            using var connection = new NpgsqlConnection(connectionString);
+            IConfiguration config = new ConfigurationBuilder()
+               .AddUserSecrets<DataContext>()
+               .Build();
+            using var connection = new NpgsqlConnection(config.GetConnectionString("LocalhostConnection"));
             connection.Open();
 
             using var transaction = connection.BeginTransaction();
@@ -33,7 +35,7 @@ namespace EFCoreWithPostgreSQL.Migrations
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
 
-            var values = string.Join(", ", records.Select(r => $"('{r.Id}','{r.CustomerName}', '{r.OrderDate}')"));
+            var values = string.Join(", ", records.Select(r => $"('{r.Id}','{r.CustomerName}', '{r.OrderDate:yyyy-MM-dd}')"));
             var sql = $"INSERT INTO {tableName} (\"Id\",\"CustomerName\", \"OrderDate\") VALUES {values}";
 
             command.CommandText = sql;
