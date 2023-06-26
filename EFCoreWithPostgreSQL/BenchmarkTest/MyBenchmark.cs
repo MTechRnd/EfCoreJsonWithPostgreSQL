@@ -56,8 +56,8 @@ namespace EFCoreJsonApp.BenchmarkTest
                 new Guid("6c2f59a9-a2a0-4e4d-96b9-65409109f847"),
                 new Guid("7ebb28e4-bf64-43f7-9a93-595f9c6307d4"),
             };
-            _guidTraditional = new Guid("1ebb3cb6-e9de-4798-bffa-a0968ce9ce90");
-            _guidJson = new Guid("7ebb28e4-bf64-43f7-9a93-595f9c6307d4");
+            _guidTraditional = new Guid("3509ba1b-43b2-47ff-9539-7e62b701de80");
+            _guidJson = new Guid("372323ef-ba6b-4985-929c-951c8cd0d226");
 
             Prices = new List<float>
             {
@@ -125,7 +125,7 @@ namespace EFCoreJsonApp.BenchmarkTest
             //var res9 = await _traditionalService.SumOfAllQuantityAsync();
             //var res10 = await _traditionalService.GetMaxQuantityByOrderIdAsync(_guidTraditional);
             //var res11 = await _traditionalService.GetMinQuantityByOrderIdAsync(_guidTraditional);
-            //var res12 = await _traditionalService.GetTotalByOrderIdAsync(_guidTraditional);
+            var res12 = await _traditionalService.GetTotalByOrderIdAsync(_guidTraditional);
             //var res13 = await _traditionalService.GetMaxPriceByOrderIdAsync(_guidTraditional);
             //var res14 = await _traditionalService.GetMinPriceByOrderIdAsync(_guidTraditional);
 
@@ -169,36 +169,35 @@ namespace EFCoreJsonApp.BenchmarkTest
             //};
             //await _traditionalService.InsertOrderDetailsAsync(order);
 
-            int PriceRandomizer = RandomIndex.Next(0, Prices.Count);
-            int QuantityRandomizer = RandomIndex.Next(0, Prices.Count);
-            int NameRandomizer = RandomIndex.Next(0, CustomerNames.Count);
-            List<OrderDetailUpdateDto> OrderDetailsDto = new List<OrderDetailUpdateDto>
-            {
-                new OrderDetailUpdateDto(new Guid("3a1b2dd1-9bce-4113-893d-02137e2bb817"),Prices[PriceRandomizer],Quantities[QuantityRandomizer]),
-                new OrderDetailUpdateDto(new Guid("0f3d58b4-3f84-4b3b-9004-219624e1e8f1"),Prices[PriceRandomizer],Quantities[QuantityRandomizer])
-            };
-            var updateOrderDetailsTraditional = new OrderUpdateDto(new Guid("65fbf051-52c8-423d-a9a4-3a749183e025"), CustomerNames[NameRandomizer], OrderDetailsDto);
-            await _traditionalService.UpdateOrderDetailsAsync(updateOrderDetailsTraditional);
+            //int PriceRandomizer = RandomIndex.Next(0, Prices.Count);
+            //int QuantityRandomizer = RandomIndex.Next(0, Prices.Count);
+            //int NameRandomizer = RandomIndex.Next(0, CustomerNames.Count);
+            //List<OrderDetailUpdateDto> OrderDetailsDto = new List<OrderDetailUpdateDto>
+            //{
+            //    new OrderDetailUpdateDto(new Guid("3a1b2dd1-9bce-4113-893d-02137e2bb817"),Prices[PriceRandomizer],Quantities[QuantityRandomizer]),
+            //    new OrderDetailUpdateDto(new Guid("0f3d58b4-3f84-4b3b-9004-219624e1e8f1"),Prices[PriceRandomizer],Quantities[QuantityRandomizer])
+            //};
+            //var updateOrderDetailsTraditional = new OrderUpdateDto(new Guid("65fbf051-52c8-423d-a9a4-3a749183e025"), CustomerNames[NameRandomizer], OrderDetailsDto);
+            //await _traditionalService.UpdateOrderDetailsAsync(updateOrderDetailsTraditional);
         }
 
         [Benchmark]
-        public async Task JsonLinqBenchmark()
+        public async Task JsonBenchmark()
         {
-            var resJson1 = await _jsonUsingLinqService.GetAllDataAsync();
+            //var resJson1 = await _jsonUsingLinqService.GetAllDataAsync();
             //var resJson2 = await _jsonUsingLinqService.GetDataForSingleCustomerAsync(_guidJson);
             //var resJson3 = await _jsonUsingLinqService.GetDataForMultipleCustomerAsync(_guidsOfJson);
-            //var resJson4 = _jsonUsingLinqService.TotalOrdersOfCustomerAsync(_guidJson);
-            //var resJson5 = _jsonUsingLinqService.TotalOrdersOfCustomersAsync();
-            //var resJson6 = _jsonUsingLinqService.AverageOfPriceAsync();
+            //var resJson4 = await _jsonUsingLinqService.TotalOrdersOfCustomerAsync(_guidJson);
+            //var resJson5 = await _jsonUsingLinqService.TotalOrdersOfCustomersAsync();
+            //var resJson6 = await _jsonUsingLinqService.AverageOfPriceAsync();
             //var resJson7 = _jsonUsingLinqService.AverageOfQuantityAsync();
             //var resJson8 = _jsonUsingLinqService.SumOfAllPriceAsync();
             //var resJson9 = _jsonUsingLinqService.SumOfAllQuantityAsync();
             //var resJson10 = await _jsonUsingLinqService.GetMaxQuantityByOrderIdAsync(_guidJson);
             //var resJson11 = _jsonUsingLinqService.GetMinQuantityByOrderIdAsync(_guidJson);
-            //var resJson12 = _jsonUsingLinqService.GetTotalByOrderIdAsync(_guidJson);
+            var resJson12 = await _jsonUsingLinqService.GetTotalByOrderIdAsync(_guidJson);
             //var resJson13 = _jsonUsingLinqService.GetMaxPriceByOrderIdAsync(_guidJson);
             //var resJson14 = _jsonUsingLinqService.GetMinPriceByOrderIdAsync(_guidJson);
-
 
             //var orderWithOrderDetails = new OrderWithOrderDetailEntity()
             //{
@@ -246,17 +245,17 @@ namespace EFCoreJsonApp.BenchmarkTest
 
             //await _jsonUsingLinqService.InsertOrderDetailsAsync(orderWithOrderDetails);
 
-            int PriceRandomizer = RandomIndex.Next(0, Prices.Count);
-            int QuantityRandomizer = RandomIndex.Next(0, Prices.Count);
-            int NameRandomizer = RandomIndex.Next(0, CustomerNames.Count);
-            var OrderDetailsJson = new List<OrderDetailsJsonDto>()
-            {
-                new OrderDetailsJsonDto(3, Prices[PriceRandomizer],Quantities[QuantityRandomizer]),
-                new OrderDetailsJsonDto(7, Prices[PriceRandomizer],Quantities[QuantityRandomizer])
-            };
+            //int PriceRandomizer = RandomIndex.Next(0, Prices.Count);
+            //int QuantityRandomizer = RandomIndex.Next(0, Prices.Count);
+            //int NameRandomizer = RandomIndex.Next(0, CustomerNames.Count);
+            //var OrderDetailsJson = new List<OrderDetailsJsonDto>()
+            //{
+            //    new OrderDetailsJsonDto(3, Prices[PriceRandomizer],Quantities[QuantityRandomizer]),
+            //    new OrderDetailsJsonDto(7, Prices[PriceRandomizer],Quantities[QuantityRandomizer])
+            //};
 
-            var updateDetailJson = new OrderWithOrderDetailJsonUpdateDto(new Guid("26b12fd3-3459-4be2-af59-2d7b8f81ac8e"), CustomerNames[NameRandomizer], OrderDetailsJson);
-            await _jsonUsingLinqService.UpdateOrderDetailsAsync(updateDetailJson);
+            //var updateDetailJson = new OrderWithOrderDetailJsonUpdateDto(new Guid("26b12fd3-3459-4be2-af59-2d7b8f81ac8e"), CustomerNames[NameRandomizer], OrderDetailsJson);
+            //await _jsonUsingLinqService.UpdateOrderDetailsAsync(updateDetailJson);
 
         }
     }
