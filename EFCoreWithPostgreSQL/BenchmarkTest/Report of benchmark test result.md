@@ -1,7 +1,7 @@
 ﻿
 
 # Report
-Here, you can see all query comparisons between the traditional approach and json linq approach. Here I have created two benchmark methods one is 
+Here, you can see all query comparisons between the traditional approach and Json approach. Here I have created two benchmark methods one is 
 TraditionalBenchmark and the other one is JsonBenchmark. I have tested all queries one by one and made this report. You can see the test results as 
 follow. I have also added a performance-improving percentage so you can easily see which performed better for that case.
 
@@ -15,7 +15,7 @@ FROM "Orders" AS o </br>
 LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 ORDER BY o."Id"
 
-### Json Linq Query
+### Json Query
 SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
 FROM "OrderWithOrderDetails" AS o
 
@@ -40,7 +40,7 @@ LIMIT 1 </br>
 LEFT JOIN "OrderDetails" AS o0 ON t."Id" = o0."OrderId" </br>
 ORDER BY t."Id"
 
-### Json Linq Query
+### Json Query
 SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
 FROM "OrderWithOrderDetails" AS o </br>
 WHERE o."Id" = @__id_0 </br>
@@ -62,7 +62,7 @@ LEFT JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" IN ('003caf85-8c76-4fb6-9140-18bc3ed523aa', 'b6fd1215-41f5-ed11-9f05-f46b8c8f0ef6', '01fa1215-41f5-ed11-9f05-f46b8c8f0ef6') </br>
 ORDER BY o."Id"
 
-### Json Linq Query
+### Json Query
 SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
 FROM "OrderWithOrderDetails" AS o </br>
 WHERE o."Id" IN ('002b1a62-72a1-483c-8b3b-40f7c8283bdf', '977827d2-19fa-ed11-9f08-f46b8c8f0ef6', '708b27d2-19fa-ed11-9f08-f46b8c8f0ef6')
@@ -83,7 +83,7 @@ FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
                           
-### Json Linq Query
+### Json Query
 SELECT jsonb_array_length("OrderDetailsJson") AS TotalOrderByCustomerId </br>
 FROM "OrderWithOrderDetails" </br>
 WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
@@ -104,7 +104,7 @@ FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 GROUP BY o."Id"
 
-### Json Linq Query
+### Json Query
 SELECT ""Id"", jsonb_array_length(""OrderDetailsJson"") AS TotalOrder
 FROM ""OrderWithOrderDetails""
 
@@ -123,7 +123,7 @@ SELECT avg(o0."Price")::real </br>
 FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId"
 
-### Json Linq Query
+### Json Query
 SELECT AVG(CAST(json_data ->> 'Price' AS real)) AS AverageOfPrice </br>
 FROM ""OrderWithOrderDetails"", </br>
 jsonb_array_elements(""OrderWithOrderDetails"".""OrderDetailsJson"") AS json_data
@@ -144,7 +144,7 @@ FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
 
-### Json Linq Query
+### Json Query
 SELECT MAX(CAST(json_data ->> 'Quantity' AS Integer)) AS MaximumQuantity </br>
 FROM "OrderWithOrderDetails", </br>
 jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data </br>
@@ -156,7 +156,7 @@ WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 |        JsonBenchmark | 186.2 us |  7.98 us | 1.24 us |  0.79 |    0.02 | 1.4648 |  15.36 KB |        1.15 |
 | TraditionalBenchmark | 236.7 us | 19.04 us | 4.94 us |  1.00 |    0.00 | 0.9766 |  13.33 KB |        1.00 |
 
-Performance Improving of Traditional query is 23.88%
+Performance Improving of Json query is 23.88%
 
 ## Total by order id
 
@@ -166,7 +166,7 @@ FROM "Orders" AS o </br>
 INNER JOIN "OrderDetails" AS o0 ON o."Id" = o0."OrderId" </br>
 WHERE o."Id" = @__id_0
 
-### Json Linq Query
+### Json Query
 SELECT SUM(CAST(json_data ->> 'Total' AS real)) AS TotalByOrderId </br>
 FROM "OrderWithOrderDetails", </br>
 jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data </br>
@@ -190,7 +190,7 @@ INSERT INTO "OrderDetails" ("CreatedAt", "ItemName", "OrderId", "Price", "Quanti
 VALUES (@p10, @p11, @p12, @p13, @p14, @p15) </br>
 RETURNING "Id", xmin, "Total";
 
-### Json Linq Query
+### Json Query
 INSERT INTO "OrderWithOrderDetails" ("CreatedAt", "CustomerName", "OrderDate", "OrderDetailsJson", "UpdatedAt") </br>
 VALUES (@p0, @p1, @p2, @p3, @p4) </br>
 RETURNING "Id", xmin;
@@ -213,7 +213,7 @@ UPDATE "Orders" SET "CustomerName" = @p5, "UpdatedAt" = @p6 </br>
 WHERE "Id" = @p7 AND xmin = @p8 </br>
 RETURNING xmin;
 
-### Json Linq Query
+### Json Query
 SELECT o."Id", o."CreatedAt", o."CustomerName", o."OrderDate", o."OrderDetailsJson", o.xmin, o."UpdatedAt" </br>
 FROM "OrderWithOrderDetails" AS o </br>
 WHERE o."Id" = @__orderWithOrdderDetailsDto_Id_0 </br>
