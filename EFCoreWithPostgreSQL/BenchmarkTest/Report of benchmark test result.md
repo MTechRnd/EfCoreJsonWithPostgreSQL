@@ -91,10 +91,10 @@ WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
-|      JsonBenchmark   | 522.8 us | 39.32 us | 10.21 us |  0.98 |    0.02 | 1.9531 |  18.13 KB |        1.12 |
-| TraditionalBenchmark | 531.4 us | 67.20 us | 17.45 us |  1.00 |    0.00 | 0.9766 |  16.19 KB |        1.00 |
+|        JsonBenchmark | 162.0 us | 31.01 us |  8.05 us |  0.70 |    0.07 | 1.4648 |  13.72 KB |        1.14 |
+| TraditionalBenchmark | 231.0 us | 49.22 us | 12.78 us |  1.00 |    0.00 | 0.9766 |  12.09 KB |        1.00 |
 
-Performance Improving of Json query is 1.63%
+Performance Improving of Json query is 35.11%
 
 ## Total orders for all customer
 
@@ -153,10 +153,10 @@ WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 ### Benchmark Test Result:
 |               Method |     Mean |    Error |  StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
 |--------------------- |---------:|---------:|--------:|------:|--------:|-------:|----------:|------------:|
-| TraditionalBenchmark | 512.1 us | 36.15 us | 9.39 us |  1.00 |    0.00 | 0.9766 |  16.63 KB |        1.00 |
-|        JsonBenchmark | 669.1 us | 28.29 us | 7.35 us |  1.31 |    0.02 | 1.9531 |  20.83 KB |        1.25 |
+|        JsonBenchmark | 186.2 us |  7.98 us | 1.24 us |  0.79 |    0.02 | 1.4648 |  15.36 KB |        1.15 |
+| TraditionalBenchmark | 236.7 us | 19.04 us | 4.94 us |  1.00 |    0.00 | 0.9766 |  13.33 KB |        1.00 |
 
-Performance Improving of Traditional query is 26.58%
+Performance Improving of Traditional query is 23.88%
 
 ## Total by order id
 
@@ -173,12 +173,12 @@ jsonb_array_elements("OrderWithOrderDetails"."OrderDetailsJson") AS json_data </
 WHERE "OrderWithOrderDetails"."Id" = '372323ef-ba6b-4985-929c-951c8cd0d226'
 
 ### Benchmark Test Result:
-|               Method |     Mean |    Error |  StdDev | Ratio |   Gen0 | Allocated | Alloc Ratio |
-|--------------------- |---------:|---------:|--------:|------:|-------:|----------:|------------:|
-| TraditionalBenchmark | 508.1 us | 15.25 us | 3.96 us |  1.00 | 0.9766 |  16.77 KB |        1.00 |
-|        JsonBenchmark | 730.2 us | 18.08 us | 2.80 us |  1.44 | 1.9531 |  21.19 KB |        1.26 |
+|               Method |     Mean |    Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|--------------------- |---------:|---------:|---------:|------:|--------:|-------:|----------:|------------:|
+|        JsonBenchmark | 191.8 us | 23.42 us |  6.08 us |  0.76 |    0.02 | 1.4648 |  15.57 KB |        1.17 |
+| TraditionalBenchmark | 251.8 us | 46.48 us | 12.07 us |  1.00 |    0.00 | 0.9766 |   13.3 KB |        1.00 |
 
-Performance Improving of Traditional query is 35.87%
+Performance Improving of Json query is 27.05%
 
 ## Insert Data
 
