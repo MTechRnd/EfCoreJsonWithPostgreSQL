@@ -35,6 +35,4 @@ The following are basic commands which I have used:
 ![image](https://github.com/MTechRnd/EfCoreJsonWithPostgreSQL/assets/123544692/f6684a2a-0cc4-46d2-8054-d5b2f0ec9abe)
 
 ## Benchmark Test Report Link is as follows:
-https://github.com/MTechRnd/EfCoreJsonWithPostgreSQL/blob/benchmarkTest/EFCoreWithPostgreSQL/BenchmarkTest/Report%20of%20benchmark%20test%20result.md
-
-
+https://github.com/MTechRnd/EfCoreJsonWithPostgreSQL/blob/main/EFCoreWithPostgreSQL/BenchmarkTest/Report%20of%20benchmark%20test%20result.md
