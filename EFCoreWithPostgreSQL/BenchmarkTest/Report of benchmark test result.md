@@ -223,9 +223,9 @@ WHERE "Id" = @p3 AND xmin = @p4 </br>
 RETURNING xmin;
 
 ### Benchmark Test Result:
-|               Method |        Mean |       Error |    StdDev | Ratio | RatioSD |      Gen0 |     Gen1 |   Allocated | Alloc Ratio |
-|--------------------- |------------:|------------:|----------:|------:|--------:|----------:|---------:|------------:|------------:|
-| TraditionalBenchmark |    979.0 us |    72.64 us |  11.24 us |  1.00 |    0.00 |    5.8594 |        - |    67.89 KB |        1.00 |
-|    JsonBenchmark     | 71,306.4 us | 1,595.72 us | 414.40 us | 72.70 |    0.77 | 2250.0000 | 500.0000 | 20869.86 KB |      307.43 |
+|               Method |       Mean |     Error |   StdDev | Ratio | RatioSD |   Gen0 | Allocated | Alloc Ratio |
+|--------------------- |-----------:|----------:|---------:|------:|--------:|-------:|----------:|------------:|
+|        JsonBenchmark |   570.4 us |  25.88 us |  6.72 us |  0.57 |    0.02 | 2.9297 |   31.5 KB |        0.46 |
+| TraditionalBenchmark | 1,002.4 us | 128.44 us | 33.36 us |  1.00 |    0.00 | 5.8594 |  67.87 KB |        1.00 |
 
-Performance Improving of Traditional query is 194.06%
+Performance Improving of Json query is 54.93%
