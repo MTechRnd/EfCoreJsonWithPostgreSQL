@@ -8,13 +8,9 @@ follow. I have also added a performance-improving percentage so you can easily s
 
 ## Benchmark Test Result Summary
 
-BenchmarkDotNet=v0.13.5, OS=Windows 11 (10.0.22621.1555/22H2/2022Update/SunValley2)
-12th Gen Intel Core i5-12400, 1 CPU, 12 logical and 6 physical cores
-.NET SDK=7.0.102
-  [Host]     : .NET 7.0.2 (7.0.222.60605), X64 RyuJIT AVX2
-  Job-AWXFHM : .NET 7.0.2 (7.0.222.60605), X64 RyuJIT AVX2
-
-IterationCount=5  WarmupCount=5
+The benchmark test was performed using BenchmarkDotNet version 0.13.5 on a Windows 11 operating system (version 10.0.22621.1555/22H2/2022Update/SunValley2). The hardware configuration consisted of a 12th Generation Intel Core i5-12400 processor with 1 CPU, 12 logical cores, and 6 physical cores.
+The test was conducted using .NET SDK version 7.0.102. The host environment for the benchmark test was .NET 7.0.2 (version 7.0.222.60605) with X64 RyuJIT AVX2 optimization. The job configuration for the test was also set to .NET 7.0.2 (version 7.0.222.60605) with X64 RyuJIT AVX2 optimization.
+The benchmark test consisted of 5 iterations and 5 warm-up runs.
 
 # All Queries
 
