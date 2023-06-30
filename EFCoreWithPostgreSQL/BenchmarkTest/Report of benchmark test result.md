@@ -5,6 +5,17 @@ Here, you can see all query comparisons between the traditional approach and Jso
 TraditionalBenchmark and the other one is JsonBenchmark. I have tested all queries one by one and made this report. You can see the test results as 
 follow. I have also added a performance-improving percentage so you can easily see which performed better for that case.
 
+
+## Benchmark Test Result Summary
+
+BenchmarkDotNet=v0.13.5, OS=Windows 11 (10.0.22621.1555/22H2/2022Update/SunValley2)
+12th Gen Intel Core i5-12400, 1 CPU, 12 logical and 6 physical cores
+.NET SDK=7.0.102
+  [Host]     : .NET 7.0.2 (7.0.222.60605), X64 RyuJIT AVX2
+  Job-AWXFHM : .NET 7.0.2 (7.0.222.60605), X64 RyuJIT AVX2
+
+IterationCount=5  WarmupCount=5
+
 # All Queries
 
 ## Get all data

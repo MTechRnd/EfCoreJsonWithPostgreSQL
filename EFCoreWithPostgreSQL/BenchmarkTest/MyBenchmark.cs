@@ -9,6 +9,7 @@ using EFCoreJsonApp.Models.OrderWithOrderDetailJson;
 using EFCoreJsonApp.Services;
 using EFCoreJsonApp.Services.JsonUsingLinqService;
 using EFCoreJsonApp.Services.TraditionalService;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EFCoreJsonApp.BenchmarkTest
 {
@@ -86,6 +87,7 @@ namespace EFCoreJsonApp.BenchmarkTest
             DeleteOtherRecordsOfOrderWithOrderDetailsEntity();
         }
 
+        // Delete records in orders entity which is above 10,000 before running a benchmark test. It will delete referenced records.
         public void DeleteOtherRecordsOfOrderEntity()
         {
             var totalRecords = _dataContext.Orders.Count();
@@ -98,6 +100,7 @@ namespace EFCoreJsonApp.BenchmarkTest
                 _dataContext.SaveChanges();
             }
         }
+        // Delete records in orderWithOrderDetail above 10,000 before running a benchmark test. It will delete referenced records.
         public void DeleteOtherRecordsOfOrderWithOrderDetailsEntity()
         {
             var totalRecords = _jsonDataContext.OrderWithOrderDetails.Count();
@@ -190,14 +193,14 @@ namespace EFCoreJsonApp.BenchmarkTest
             //var resJson4 = await _jsonUsingLinqService.TotalOrdersOfCustomerAsync(_guidJson);
             //var resJson5 = await _jsonUsingLinqService.TotalOrdersOfCustomersAsync();
             //var resJson6 = await _jsonUsingLinqService.AverageOfPriceAsync();
-            //var resJson7 = _jsonUsingLinqService.AverageOfQuantityAsync();
-            //var resJson8 = _jsonUsingLinqService.SumOfAllPriceAsync();
-            //var resJson9 = _jsonUsingLinqService.SumOfAllQuantityAsync();
+            //var resJson7 = await _jsonUsingLinqService.AverageOfQuantityAsync();
+            //var resJson8 = await _jsonUsingLinqService.SumOfAllPriceAsync();
+            //var resJson9 = await _jsonUsingLinqService.SumOfAllQuantityAsync();
             //var resJson10 = await _jsonUsingLinqService.GetMaxQuantityByOrderIdAsync(_guidJson);
-            //var resJson11 = _jsonUsingLinqService.GetMinQuantityByOrderIdAsync(_guidJson);
+            //var resJson11 = await _jsonUsingLinqService.GetMinQuantityByOrderIdAsync(_guidJson);
             var resJson12 = await _jsonUsingLinqService.GetTotalByOrderIdAsync(_guidJson);
-            //var resJson13 = _jsonUsingLinqService.GetMaxPriceByOrderIdAsync(_guidJson);
-            //var resJson14 = _jsonUsingLinqService.GetMinPriceByOrderIdAsync(_guidJson);
+            //var resJson13 = await _jsonUsingLinqService.GetMaxPriceByOrderIdAsync(_guidJson);
+            //var resJson14 = await _jsonUsingLinqService.GetMinPriceByOrderIdAsync(_guidJson);
 
             //var orderWithOrderDetails = new OrderWithOrderDetailEntity()
             //{
