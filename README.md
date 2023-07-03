@@ -26,6 +26,7 @@ The following are basic commands which I have used:
 - There are two services. One service is for traditional queries and the second service is for json service.
 - For the traditional approach, there are two tables. One is Order where Id is the primary key. The second table is OrderDetails where OrderId is a foreign key.
 - For json approach, there is only one table which is orderWithOrderDetails. Where you can find one column which has property jsonb. Here in this column, I have stored data in an array of json(OrderDetails).
+- The default index is a unique index that will be created for the primary key(Id).
 
 ### ER Diagrams:
 - Relationship between order and orderDetails with data type. </br>
